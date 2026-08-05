@@ -30,7 +30,8 @@ model Library {
     backend LibraryBackend
     options Json
 
-    games Game[]
+    games         Game[]
+    allowedGroups UserGroup[]
 }
 
 model Depot {

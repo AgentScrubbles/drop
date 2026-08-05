@@ -20,6 +20,12 @@
               scope="col"
               class="px-3 py-3.5 text-left text-sm font-semibold text-zinc-100"
             >
+              {{ $t("library.admin.sources.visibility") }}
+            </th>
+            <th
+              scope="col"
+              class="px-3 py-3.5 text-left text-sm font-semibold text-zinc-100"
+            >
               {{ $t("library.admin.sources.working") }}
             </th>
             <th
@@ -70,6 +76,24 @@
                 class="size-5 text-zinc-400"
               />
               {{ optionsMetadata[source.backend].title }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm">
+              <span
+                v-if="
+                  source.allowedGroups && source.allowedGroups.length > 0
+                "
+                class="inline-flex items-center gap-1 rounded-full bg-yellow-900/30 border border-yellow-700/50 px-2 py-0.5 text-xs text-yellow-300"
+              >
+                <LockClosedIcon class="size-3" />
+                {{ $t("library.admin.sources.restricted") }}
+              </span>
+              <span
+                v-else
+                class="inline-flex items-center gap-1 rounded-full bg-green-900/30 border border-green-700/50 px-2 py-0.5 text-xs text-green-300"
+              >
+                <GlobeAltIcon class="size-3" />
+                {{ $t("library.admin.sources.public") }}
+              </span>
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-zinc-400">
               <CheckIcon v-if="source.working" class="size-5 text-green-500" />
@@ -144,7 +168,13 @@
 <script setup lang="ts">
 import type { WorkingLibrarySource } from "~/server/api/v1/admin/library/sources/index.get";
 import type { LibraryBackend } from "~/prisma/client/enums";
-import { BackwardIcon, CheckIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import {
+  BackwardIcon,
+  CheckIcon,
+  GlobeAltIcon,
+  LockClosedIcon,
+  XMarkIcon,
+} from "@heroicons/vue/24/outline";
 import { DropLogo } from "#components";
 import { formatBytes } from "~/server/internal/utils/files";
 import { getBarColor } from "~/utils/colors";

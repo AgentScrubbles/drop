@@ -18,6 +18,12 @@ export default defineEventHandler(async (h3) => {
         },
       },
       bannedAgeRatings: true,
+      allowedLibraries: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 

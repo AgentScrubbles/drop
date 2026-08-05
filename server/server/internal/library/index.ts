@@ -79,7 +79,13 @@ class LibraryManager {
   }
 
   async fetchLibraries(): Promise<WorkingLibrarySource[]> {
-    const libraries = await prisma.library.findMany({});
+    const libraries = await prisma.library.findMany({
+      include: {
+        allowedGroups: {
+          select: { id: true, name: true },
+        },
+      },
+    });
 
     const libraryWithMetadata = libraries.map(async (library) => {
       const theLibrary = this.libraries.get(library.id);

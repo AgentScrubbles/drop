@@ -5,6 +5,7 @@ import libraryManager from "~/server/internal/library";
 export type WorkingLibrarySource = LibraryModel & {
   working: boolean;
   fsStats?: { freeSpace: number; totalSpace: number } | undefined;
+  allowedGroups?: { id: string; name: string }[];
 };
 
 export default defineEventHandler(async (h3) => {

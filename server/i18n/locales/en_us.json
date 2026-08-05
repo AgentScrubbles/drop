@@ -572,7 +572,14 @@
         "sources": "Library Sources",
         "totalSpace": "Total space",
         "typeDesc": "The type of your source. Changes the required options.",
+        "groupRestrictions": "Group Restrictions",
+        "groupRestrictionsDesc": "Leave empty to make visible to all users. Select groups to restrict visibility.",
+        "groupRestrictionsNote": "Users not in any selected group will not see games from this library.",
+        "noGroupsAvailable": "No groups available. Create groups in the Users section.",
+        "public": "Public",
+        "restricted": "Restricted",
         "utilizationPercentage": "Utilization percentage",
+        "visibility": "Visibility",
         "working": "Working?"
       },
       "subheader": "As you add folders to your library sources, Drop will detect it and prompt you to import it. Each game needs to be imported before you can import a version.",
@@ -835,6 +842,8 @@
         "removeBannedRating": "Remove",
         "removeMember": "Remove",
         "title": "User Groups",
+        "accessibleLibraries": "Accessible Libraries",
+        "noLibraryRestrictions": "This group has no library restrictions configured.",
         "unratedNote": "Games without age ratings will also be hidden from users in this group."
       },
       "normalUserLabel": "Normal user",

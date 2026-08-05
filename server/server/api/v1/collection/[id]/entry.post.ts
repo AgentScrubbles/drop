@@ -1,7 +1,7 @@
 import aclManager from "~/server/internal/acls";
 import prisma from "~/server/internal/db/database";
 import userLibraryManager from "~/server/internal/userlibrary";
-import { getAgeRestrictionFilter } from "~/server/internal/utils/ageRestrictions";
+import { getGameVisibilityFilter } from "~/server/internal/utils/gameVisibility";
 
 export default defineEventHandler(async (h3) => {
   const user = await aclManager.getUserACL(h3, ["collections:add"]);
@@ -22,10 +22,10 @@ export default defineEventHandler(async (h3) => {
   if (!gameId)
     throw createError({ statusCode: 400, statusMessage: "Game ID required" });
 
-  const ageFilter = await getAgeRestrictionFilter(user.id, user.admin);
-  if (ageFilter) {
+  const visibilityFilter = await getGameVisibilityFilter(user.id, user.admin);
+  if (visibilityFilter) {
     const allowed = await prisma.game.count({
-      where: { id: gameId, ...ageFilter },
+      where: { id: gameId, ...visibilityFilter },
     });
     if (allowed === 0)
       throw createError({ statusCode: 404, statusMessage: "Game not found" });

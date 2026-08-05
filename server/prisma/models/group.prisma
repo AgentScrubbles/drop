@@ -8,6 +8,7 @@ model UserGroup {
 
   users            User[]
   bannedAgeRatings BannedAgeRating[]
+  allowedLibraries Library[]
 }
 
 model BannedAgeRating {

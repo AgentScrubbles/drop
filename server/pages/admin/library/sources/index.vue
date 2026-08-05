@@ -157,6 +157,45 @@
             v-model="sourceConfig"
           />
 
+          <div class="h-[1px] w-full bg-zinc-700 rounded-full" />
+
+          <div>
+            <label class="block text-sm font-medium leading-6 text-zinc-100">
+              {{ $t("library.admin.sources.groupRestrictions") }}
+            </label>
+            <p class="text-zinc-400 block text-xs font-medium leading-6">
+              {{ $t("library.admin.sources.groupRestrictionsDesc") }}
+            </p>
+            <div
+              v-if="allGroups.length === 0"
+              class="mt-2 text-sm text-zinc-500"
+            >
+              {{ $t("library.admin.sources.noGroupsAvailable") }}
+            </div>
+            <div v-else class="mt-2 space-y-2">
+              <label
+                v-for="group in allGroups"
+                :key="group.id"
+                class="flex items-center gap-2 cursor-pointer"
+              >
+                <input
+                  type="checkbox"
+                  :value="group.id"
+                  :checked="selectedGroupIds.includes(group.id)"
+                  class="rounded border-zinc-600 bg-zinc-800 text-blue-600 focus:ring-blue-600"
+                  @change="toggleGroup(group.id)"
+                />
+                <span class="text-sm text-zinc-100">{{ group.name }}</span>
+              </label>
+            </div>
+            <p
+              v-if="selectedGroupIds.length > 0"
+              class="mt-2 text-xs text-yellow-400"
+            >
+              {{ $t("library.admin.sources.groupRestrictionsNote") }}
+            </p>
+          </div>
+
           <input type="submit" class="hidden" />
         </form>
 
@@ -253,6 +292,24 @@ const sources = ref(
   }),
 );
 
+interface GroupListItem {
+  id: string;
+  name: string;
+}
+const allGroups = ref<GroupListItem[]>(
+  await $dropFetch<GroupListItem[]>("/api/v1/admin/groups", { headers }),
+);
+const selectedGroupIds = ref<string[]>([]);
+
+function toggleGroup(id: string) {
+  const idx = selectedGroupIds.value.indexOf(id);
+  if (idx === -1) {
+    selectedGroupIds.value.push(id);
+  } else {
+    selectedGroupIds.value.splice(idx, 1);
+  }
+}
+
 const editIndex = ref<undefined | number>(undefined);
 const createMode = computed(() => editIndex.value === undefined);
 
@@ -308,6 +365,17 @@ async function performActionSource() {
       headers,
     },
   );
+  // Update group restrictions
+  const updatedSource = await $dropFetch<WorkingLibrarySource>(
+    `/api/v1/admin/library/sources/${source.id}/groups`,
+    {
+      method: "PATCH",
+      body: { groupIds: selectedGroupIds.value },
+      headers,
+    },
+  );
+  source.allowedGroups = updatedSource.allowedGroups;
+
   if (createMode) {
     sources.value.push(source);
   } else {
@@ -323,6 +391,7 @@ function performActionSource_wrapper() {
       actionSourceOpen.value = false;
       sourceConfig.value = {};
       sourceName.value = "";
+      selectedGroupIds.value = [];
     })
     .catch((e) => {
       if (e instanceof FetchError) {
@@ -342,6 +411,7 @@ function edit(index: number) {
 
   sourceName.value = source.name;
   sourceConfig.value = source.options! as object;
+  selectedGroupIds.value = (source.allowedGroups ?? []).map((g) => g.id);
 
   editIndex.value = index;
   actionSourceOpen.value = true;

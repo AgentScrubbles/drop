@@ -111,6 +111,33 @@
       </div>
     </div>
 
+    <!-- Accessible Libraries Section -->
+    <div class="mt-8 rounded-lg border border-zinc-800 bg-zinc-900 p-6">
+      <h2 class="text-base font-semibold text-zinc-100 mb-4">
+        {{ $t("users.admin.groups.accessibleLibraries") }}
+      </h2>
+      <div
+        v-if="!group.allowedLibraries || group.allowedLibraries.length === 0"
+        class="text-sm text-zinc-400"
+      >
+        {{ $t("users.admin.groups.noLibraryRestrictions") }}
+      </div>
+      <ul v-else class="space-y-2">
+        <li
+          v-for="lib in group.allowedLibraries"
+          :key="lib.id"
+          class="flex items-center rounded-md bg-zinc-800/50 px-3 py-2"
+        >
+          <NuxtLink
+            to="/admin/library/sources"
+            class="text-sm text-blue-400 hover:text-blue-300"
+          >
+            {{ lib.name }}
+          </NuxtLink>
+        </li>
+      </ul>
+    </div>
+
     <!-- Banned Ratings Section -->
     <div class="mt-8 rounded-lg border border-zinc-800 bg-zinc-900 p-6">
       <h2 class="text-base font-semibold text-zinc-100 mb-4">
@@ -218,12 +245,18 @@ interface BannedRating {
   rating: string;
 }
 
+interface AllowedLibrary {
+  id: string;
+  name: string;
+}
+
 interface GroupDetail {
   id: string;
   name: string;
   description: string;
   users: GroupMember[];
   bannedAgeRatings: BannedRating[];
+  allowedLibraries: AllowedLibrary[];
 }
 
 const group = ref<GroupDetail | null>(null);
